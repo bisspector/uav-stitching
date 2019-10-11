@@ -69,6 +69,7 @@ class Stitcher:
         
         dx, dy = 0,0
         for i in range(len(data)):
+            target_photo_path = None
             idata = data[i]
             photo_id = '{0:03d}'.format(idata["img_idx"])
 
@@ -76,8 +77,8 @@ class Stitcher:
             ОСОБЕННО ТУТ НИЧЕГО НЕ ТРОГАТЬ
             """
 
-            lat = idata["lat"]//120
-            lng = idata["lng"]//120
+            lat = idata["lat"]//75
+            lng = idata["lng"]//75
             if idata["img_idx"] == 1:
                 dy,dx = abs(CANVAS_SIZE//2 - lat), abs(CANVAS_SIZE//10 - lng)
                 print("dx, dy: ", dx, dy)
@@ -90,6 +91,10 @@ class Stitcher:
                 if filename.endswith(photo_id + ".JPG"):
                     target_photo_path = os.path.join(self._wdir, filename)
                     break
+            
+            if target_photo_path == None:
+                print("skipping photo")
+                continue
             
             target_photo = Image.open(target_photo_path).convert("RGBA").rotate(idata["yaw"]-180, expand=1).resize((600, 450), Image.ANTIALIAS)
             
